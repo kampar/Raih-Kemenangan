@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>KELOMPOK TANI RAIH KEMENANGAN DESA MUARA DUA KECAMATAN SIAK KECIL KABUPATEN BENGKALIS PROVINSI RIAU</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="https://unpkg.com/@turf/turf/turf.min.js"></script>
+    <style>
+        #map { position:absolute; top:0; bottom:0; left:0; right:0; }
+    </style>
+</head>
+<body>
+    <div id="map"></div>
+    <script>
+var map = L.map('map').setView([1.0706017,102.0048179], 13); // Desa Muara Dua, Riau, Indonesia 1.0706017,102.0048179
+
+
+// Define tile layers
+var osm = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    maxZoom: 19,
+    attribution: 'Map data © OpenStreetMap contributors'
+}).addTo(map);
+
+
+var googleMaps = L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { maxZoom: 19 });
+var googleSatellite = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', { maxZoom: 19 });
+var googleTerrain = L.tileLayer('https://mt1.google.com/vt/lyrs=t&x={x}&y={y}&z={z}', { maxZoom: 19 });
+var googleTerrainHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', { maxZoom: 19 });
+var googleSatelliteHybrid = L.tileLayer('https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { maxZoom: 19 });
+var stamenTerrain = L.tileLayer('http://tile.stamen.com/terrain/{z}/{x}/{y}.png', { maxZoom: 20, attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL' });
+var stamenToner = L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', { maxZoom: 20, attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL' });
+var stamenTonerLight = L.tileLayer('http://tile.stamen.com/toner-lite/{z}/{x}/{y}.png', { maxZoom: 20, attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL' });
+var stamenWatercolor = L.tileLayer('http://tile.stamen.com/watercolor/{z}/{x}/{y}.jpg', { maxZoom: 18, attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under ODbL' });
+var wikimediaMap = L.tileLayer('https://maps.wikimedia.org/osm-intl/{z}/{x}/{y}.png', { maxZoom: 20, attribution: 'OpenStreetMap contributors, under ODbL' });
+var wikimediaHikeBikeMap = L.tileLayer('http://tiles.wmflabs.org/hikebike/{z}/{x}/{y}.png', { maxZoom: 17, attribution: 'OpenStreetMap contributors, under ODbL' });
+var esriBoundariesPlaces = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/Reference/World_Boundaries_and_Places/MapServer/tile/{z}/{y}/{x}', { maxZoom: 20 });
+var esriGrayDark = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Dark_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16 });
+var esriGrayLight = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 16 });
+var esriNationalGeographic = L.tileLayer('http://services.arcgisonline.com/ArcGIS/rest/services/NatGeo_World_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 12 });
+var esriOcean = L.tileLayer('https://services.arcgisonline.com/ArcGIS/rest/services/Ocean/World_Ocean_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 10 });
+var esriSatellite = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}', { maxZoom: 17 });
+var esriStandard = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}', { maxZoom: 17 });
+var esriTerrain = L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Terrain_Base/MapServer/tile/{z}/{y}/{x}', { maxZoom: 13 });
+
+
+// Add control
+var baseLayers = {
+    "OpenStreetMap": osm,
+    "Google Maps": googleMaps,
+    "Google Satellite": googleSatellite,
+    "Google Terrain": googleTerrain,
+    "Google Terrain Hybrid": googleTerrainHybrid,
+    "Google Satellite Hybrid": googleSatelliteHybrid,
+    "Stamen Terrain": stamenTerrain,
+    "Stamen Toner": stamenToner,
+    "Stamen Toner Light": stamenTonerLight,
+    "Stamen Watercolor": stamenWatercolor,
+    "Wikimedia Map": wikimediaMap,
+    "Wikimedia Hike Bike Map": wikimediaHikeBikeMap,
+    "Esri Boundaries Places": esriBoundariesPlaces,
+    "Esri Gray (dark)": esriGrayDark,
+    "Esri Gray (light)": esriGrayLight,
+    "Esri National Geographic": esriNationalGeographic,
+    "Esri Ocean": esriOcean,
+    "Esri Satellite": esriSatellite,
+    "Esri Standard": esriStandard,
+    "Esri Terrain": esriTerrain
+};
+
+L.control.layers(baseLayers).addTo(map);
+
+/*
+//Uncaught ReferenceError: $ is not defined
+//butuh jQuery
+
+// Autohide control
+map.on('mouseout', function(e) {
+    $(".leaflet-control-layers").fadeOut();
+});
+
+map.on('mouseover', function(e) {
+    $(".leaflet-control-layers").fadeIn();
+});
+*/
+
+
+
+
+
+
+
+var polygon1 = L.polygon([
+	[1.043028,102.013258],
+	[1.044509,102.014619],
+	[1.051157,102.012753],
+	[1.050386,102.010299],
+	[1.043028,102.013258]
+]).on('click', function() {
+    var area = turf.area(this.toGeoJSON());
+    this.bindPopup('<h1>542/MD/593.83/2019</h1> Luas: ' + area.toFixed(2) + ' m2').openPopup();
+}).addTo(map);
+
+var polygon2 = L.polygon([
+	[1.051796,102.005443],
+	[1.050204,102.010606],
+	[1.052111,102.005274],
+	[1.052120,102.003979],
+	[1.051796,102.005443]
+]).on('click', function() {
+    var area = turf.area(this.toGeoJSON());
+    this.bindPopup('<h1>516/MD/593.83/2019</h1> Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();
+}).addTo(map);
+
+
+var polygon3 = L.polygon([[1.061850,102.012702],[1.055824,102.010600],[1.052378,102.012564],[1.051490,102.021542]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>482/MD/593.83/2019</h1> Nama: AKIP UDIN<br/>NIK: 1403120108681241<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+var polygon4 = L.polygon([[1.051796,102.005443],[1.050204,102.010606],[1.052111,102.005274],[1.052120,102.003979]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>505/MD/593.83/2019</h1> Nama: AKIP UDIN<br/>NIK: 1403120108681241<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+var polygon5 = L.polygon([[1.04074,102.00196],[1.04071,102.00120],[1.04031,102.00118],[1.04033,102.00197]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>470/MD/593.83/2019</h1> Nama: ARMAN<br/>NIK: 1406092303790008<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+var polygon6 = L.polygon([[1.04074,102.00196],[1.04071,102.00120],[1.04031,102.00118],[1.04033,102.00197]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>471/MD/593.83/2019</h1> Nama: ARMAN<br/>NIK: 1406092303790008<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+var polygon7 = L.polygon([[1.050382,102.010299],[1.051106,102.011459],[1.043082,102.011934],[1.043082,102.013258]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>545/MD/593.83/2019</h1> Nama: DAHROJI<br/>NIK: 1403121604647620<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon8 = L.polygon([[1.050382,102.010299],[1.051106,102.011459],[1.043082,102.011934],[1.043082,102.013258]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>496/MD/593.83/2019</h1> Nama: DAHROJI<br/>NIK: 1403121604647620<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon9 = L.polygon([[1.03316,102.58505],[1.03381,101.58508],[1.03379,101.58534],[1.03311,101.58531]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>559/MD/593.83/2019</h1> Nama: DANIEL YOSS SIMATUPANG<br/>NIK: 1403031506760002<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon10 = L.polygon([[1.03316,102.58505],[1.03381,101.58508],[1.03379,101.58534],[1.03311,101.58531]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>562/MD/593.83/2019</h1> Nama: DANIEL YOSS SIMATUPANG<br/>NIK: 1403031506760002<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon11 = L.polygon([[1.050382,102.010299],[1.050830,102.004676],[1.043082,102.011934],[1.043163,102.010298]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>497/MD/593.83/2019</h1> Nama: DEDE WAHYUDI<br/>NIK: 1403121108870001<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon12 = L.polygon([[1.051796,102.005443],[1.050204,102.010606],[1.052111,102.005274],[1.052120,102.003979]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>484/MD/593.83/2019</h1> Nama: DESLAPIANA<br/>NIK: 1403125512910002<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon13 = L.polygon([[1.0423,102.00293],[1.04234,102.00204],[1.04185,102.00205],[1.04193,102.00266]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>485/MD/593.83/2019</h1> Nama: DESLAPIANA<br/>NIK: 1403125512910002<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon14 = L.polygon([[1.051796,102.005443],[1.050204,102.010606],[1.052111,102.005274],[1.052120,102.003979]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>577/MD/593.83/2019</h1> Nama: DONY<br/>NIK: 1205110303860008<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon15 = L.polygon([[1.051796,102.005443],[1.050204,102.010606],[1.052111,102.005274],[1.052120,102.003979]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>469/MD/593.83/2019</h1> Nama: EKO JUNIANTO<br/>NIK: 1407080909880003<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon16 = L.polygon([[1.044958,102.003693],[1.044971,102.004328],[1.043793,102.004119],[1.043870,102.003672]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>571/MD/593.83/2019</h1> Nama: EKO JUNIANTO<br/>NIK: 1407080909880003<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon17 = L.polygon([[1.04059,102.00202],[1.04059,102.00274],[1.04034,102.00266],[1.04035,102.00202]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>486/MD/593.83/2019</h1> Nama: EKO RIYONO<br/>NIK: 1403122802827303<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon18 = L.polygon([[1.043028,102.013258],[1.044509,102.014619],[1.051157,102.012753],[1.050386,102.010299]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>473/MD/593.83/2019</h1> Nama: ELLA PRIHATIN<br/>NIK: 1401196708840003<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon19 = L.polygon([[1.050382,102.010299],[1.051106,102.011459],[1.043082,102.011934],[1.043082,102.013258]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>495/MD/593.83/2019</h1> Nama: ELLA PRIHATIN<br/>NIK: 1401196708840003<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+var polygon20 = L.polygon([[1.03429,102.00201],[1.03438,102.00139],[1.03492,102.00138],[1.03488,102.00030],[1.03427,102.00091],[1.03408,102.00202]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>406/MD/593.83/2019</h1> Nama: FATIMAH<br/>NIK: 1407084108990004<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+
+
+
+var polygon21 = L.polygon([[1.03483,158.393],[1.03478,101.58370],[1.03395,101.58363],[1.03397,101.58389]]).on('click',function(){var area = turf.area(this.toGeoJSON());this.bindPopup('<h1>579/MD/593.83/2019</h1> Nama: HADI SURYONO<br/>NIK: 1403120307801967<br/>Luas: ' + area.toFixed(2) + ' m2<br/>Hektar: '+(area/10000).toFixed(2)+' Ha').openPopup();}).addTo(map);
+
+
+
+    </script>
+</body>
+</html>
+
